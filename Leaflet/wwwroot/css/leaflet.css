@@ -1,0 +1,15 @@
+﻿h1 {
+    color: red;
+}
+
+ul {
+    list-style-type: none;
+}
+
+li {
+    display: inline;
+}
+
+.list {
+    background-color: green;
+}

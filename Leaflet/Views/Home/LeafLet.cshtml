@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewData["Title"] = "Leaflet";
+}
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.0/dist/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.3.0/dist/leaflet.js"></script>
+    <script src="~/js/leaflet.js"></script>
+    <script src="~/js/MousePosition.js"></script>
+
+</head>
+<body onload="displayleaflet()">
+    <div class="main">
+        <div class="list">
+            <ul>
+                <li>地図から探す</li>
+                <li>条件から探す</li>
+                <li>よくある質問</li>
+                <li>お問い合わせ</li>
+            </ul>
+        </div>
+        <h1>leaflet地図</h1>
+        <div id="map" style="width:600px;height:600px"></div>
+        <p>
+            テストテキスト:<input type="text" value="" id="searchArea">
+            <input type="submit" value="検索" onclick="searchAreabtn()">
+        </p>
+        <button id="ss" onclick="findMyLocation()">現在地を表示</button>
+        <span id="msg"></span>
+    </div>
+
+    <div>
+        <form action="/Home/Leaflet" method="post">
+            検索したいエリア:<input type="text" name="searchTxt" />
+            <input type="submit" value="検索" onclick="searchResult()" />
+        </form>
+        </div>
+    <div>
+        @ViewData["searchTxt"] さんこんちは
+       
+    </div>
+
+    <p>DB接続</p>
+    <ul>
+        @if (ViewBag.Users != null)
+        {
+        @foreach (var s in ViewBag.Users)
+        {
+            <li>@s</li>
+        }
+        }
+        else 
+        {
+            
+        }
+        </ul>
+</body>
+</html>
