@@ -170,16 +170,16 @@ function findMyLocation() {
 // 検索した結果を元に地図の緯度と経度を取得し、マーカでその対象のエリアを示す
 function searchResult() {
     // c#の処理を終えてから処理を行う
-    const wait = (sec) => {
-        return new Promise((resolve, reject) => {
-            setTimeout(resolve, sec * 3000);
-        });
-    };
-    async function main()
-    {
+    //const wait = (sec) => {
+    //    return new Promise((resolve, reject) => {
+    //        setTimeout(resolve, sec * 3000);
+    //    });
+    //};
+    //async function main()
+    //{
         try
         {
-            await wait(10);
+           // await wait(10);
             // li要素を取得
             elements = document.getElementsByTagName("li");
 
@@ -192,7 +192,7 @@ function searchResult() {
         {
             console.error(err);
         }
-    }
-    main();
+    
+    //main();
 }
 
