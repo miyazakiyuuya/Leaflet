@@ -33,32 +33,21 @@
         </p>
         <button id="ss" onclick="findMyLocation()">現在地を表示</button>
         <span id="msg"></span>
+        <span id="msg1"></span>
+        <span id="msg2"></span>
     </div>
 
     <div>
-        <form action="/Home/Leaflet" method="post">
-            検索したいエリア:<input type="text" name="searchTxt" />
+        @*<form action="/Home/Leaflet" method="post">*@
+            検索したいエリア:<input type="text" value="" id="searchTxt" />
             <input type="submit" value="検索" onclick="searchResult()" />
-        </form>
-        </div>
+       @*</form>*@
+    </div>
     <div>
         @ViewData["searchTxt"] さんこんちは
-       
     </div>
 
-    <p>DB接続</p>
-    <ul>
-        @if (ViewBag.Users != null)
-        {
-        @foreach (var s in ViewBag.Users)
-        {
-            <li>@s</li>
-        }
-        }
-        else 
-        {
-            
-        }
-        </ul>
+    <p>DB接続テスト</p>
+       @ViewData["label1"]
 </body>
 </html>
