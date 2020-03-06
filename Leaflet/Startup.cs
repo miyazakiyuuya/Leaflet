@@ -23,6 +23,9 @@ namespace Leaflet
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // セッションの設定
+            services.AddSession();
+
             services.AddControllersWithViews();
         }
 
@@ -45,6 +48,9 @@ namespace Leaflet
             app.UseRouting();
 
             app.UseAuthorization();
+
+            // セッションの設定
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

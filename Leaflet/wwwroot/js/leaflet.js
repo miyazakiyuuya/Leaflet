@@ -123,7 +123,11 @@ function displayleaflet() {
             fillColor: '#FF0000',
             fillOpacity: 0.5,
         }).addTo(map);
-}
+
+    var aa = document.getElementsByTagName("p");
+    document.getElementById('msg1').innerHTML = aa;
+    }
+
 
 
 function searchAreabtn() {
@@ -168,50 +172,61 @@ function findMyLocation() {
 }
 
 // 検索した結果を元に地図の緯度と経度を取得し、マーカでその対象のエリアを示す
-function searchResult()
-{
-    let getValue = document.getElementById('searchTxt').value;
-    var postData = {
-        getValue: getValue
-    };
-     
-    // c#側にtextBoxの値を投げる
-    $.ajax({
-        url: "/Home/Leaflet",
-        type: 'Post',
-        dataType: 'Json',
-        data: JSON.stringify(postData),
-        contentType: 'application/json',
-        success: function (result) {
-            document.getElementById('msg1').innerHTML = result + "成功";
-            console.log("成功:" + result);
-        },
-        error: function (XMLHttpRequest, testStatus, errorThrown) {
-            document.getElementById('msg1').innerHTML = getValue + "失敗";
-            console.log("XMLHttpRequest:" + XMLHttpRequest.state);
-            console.log("testStatus:" + testStatus);
-            console.log("errorThrown:" + errorThrown.message);
-        },
-            //complete: function(data) { alert(data.resposeText)},
-    });
+//function searchResult(latitude, longitude) {
 
-    // 返ってきた値を判別するtry catch
-    
-    // 返ってきた値を緯度と経度にセットし、そのに検索する
-        //try
-        //{
-        //    // li要素を取得
-        //    elements = document.getElementsByTagName('li');
-        //    let latitude = [elements[0]];
-        //    let longitude = [elements[1]];
+//    let la = latitude;
+//    let lg = longitude;
 
-        //    document.getElementById('msg1') = elements;
-        //    map.setView([latitude, longitude], 15);
-        //    L.marker([latitude, longitude]).addTo(map);
-        //}
-        //catch (err)
-        //{
-        //    console.error(err);
-        //}
-}
+//    map.setView([la, lg], 15);
+//    L.marker([la, lg]).addTo(map);
+
+
+
+
+//    //let getValue = document.getElementById('searchTxt').value;
+//    //document.getElementById('msg1').innerHTML = getValue;
+//    //var postData = {
+//    //    getValue: getValue
+//    //};
+
+//    // c#側にtextBoxの値を投げる
+//    //$.ajax({
+//    //    url: "/Home/Leaflet",
+//    //    type: 'Post',
+//    //    dataType: 'Json',
+//    //    data: JSON.stringify(postData),
+//    //    //data: { searchTxt: searchTxt}
+//    //    contentType: 'application/json',
+//    //    success: function (result) {
+//    //        document.getElementById('msg1').innerHTML = result + "成功";
+//    //        console.log("成功:" + result);
+//    //    },
+//    //    error: function (XMLHttpRequest, testStatus, errorThrown) {
+//    //        document.getElementById('msg1').innerHTML = getValue + "失敗";
+//    //        console.log("XMLHttpRequest:" + XMLHttpRequest.state);
+//    //        console.log("testStatus:" + testStatus);
+//    //        console.log("errorThrown:" + errorThrown.message);
+//    //    },
+//    //    //complete: function(data) { alert(data.resposeText)},
+//    //});
+
+//    // 返ってきた値を判別するtry catch
+
+//    // 返ってきた値を緯度と経度にセットし、そのに検索する
+//    //try
+//    //{
+//    //    // li要素を取得
+//    //    elements = document.getElementsByTagName('li');
+//    //    let latitude = [elements[0]];
+//    //    let longitude = [elements[1]];
+
+//    //    document.getElementById('msg1') = elements;
+//    //    map.setView([latitude, longitude], 15);
+//    //    L.marker([latitude, longitude]).addTo(map);
+//    //}
+//    //catch (err)
+//    //{
+//    //    console.error(err);
+//    //}
+//}
 
