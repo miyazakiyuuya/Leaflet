@@ -40,20 +40,23 @@
         <form action="/Home/Leaflet" method="post">
             検索したいエリア:<input type="text" value="" name="searchTxt" />
             <input type="submit" value="検索" />
-        </form> 
+        </form>
         @ViewData["m"]
         @ViewData["a"]
         @ViewData["b"]
-        
+
 
 
         @*modelをつかう*@
-        @{ 
+        @{
             LeafletModel lm = ViewBag.LeafletModel;
-        <p>@lm.name</p>
-        <p>@lm.latitude</p>
-        <p>@lm.longitude</p>
-         }
+            <p>@lm.name</p>
+            <p>@lm.latitude</p>
+            <p>@lm.longitude</p>
+        }
+
+        <div id="area1" onmousemove="mousemove(event);" />　
+    </div>
     </div>
 </body>
 </html>

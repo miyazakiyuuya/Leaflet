@@ -1,5 +1,7 @@
 ﻿var map;
 
+var latlngss = [];
+
 function displayleaflet() {
     //地図を表示するdiv要素のidを設定
     map = L.map('map');
@@ -24,6 +26,7 @@ function displayleaflet() {
         "標準地図": gsi,
         "オープンストリート": osm,
         "淡色地図": gsipale,
+
     };
 
     // 格納したレイアウトを地図にset
@@ -57,7 +60,7 @@ function displayleaflet() {
             "coordinates": [139.4786, 35.6681]
         },
         "properties": { // ポップアップの設定
-            "popupContent": "大國魂神社宝物殿"  // ホップアップの内容
+            "popupContent": "府中のどこか"  // ホップアップの内容
         }
     }];
 
@@ -69,7 +72,6 @@ function displayleaflet() {
             }
         }
     }).addTo(map);
-
 
     // 複数のマーカを表示する
     var geojson = [];
@@ -124,21 +126,51 @@ function displayleaflet() {
             fillOpacity: 0.5,
         }).addTo(map);
 
-    var aa = document.getElementsByTagName("p");
-    document.getElementById('msg1').innerHTML = aa;
-    }
+    var sss = [
+        [37.6686, 139.4785],
+        [37.6682, 140.4787]];
+    var ply = L.polyline(sss, { color: 'red' }).addTo(map);
+
+    // マウスクリックで任意の図形を描く処理(マウスを押すごとに)
+    map.on('mousedown', function (e) {
+        // x,y座標取得
+        let x = e.latlng.lat;
+        let y = e.latlng.lng;
+
+        //console.log("最初:"+latlngss.length);
+        // 初期の場合
+        if (latlngss.length === 0) {
+            // 配列に緯度と経度をセット
+            latlngss.push([x, y], [x, y]);
+            var ply = L.polyline(latlngss, { color: 'black', "weight": 10 }).addTo(map);
+        }
+        else {
+            latlngss.push([x, y]);
+            var ply = L.polyline(latlngss, { color: 'black', "weight": 10 }).addTo(map);
+        }
+    });
 
 
+
+    // フリーハンドでマップに
+    // var mylayer = L.CanvasLayer.extend({
+    //     render: function(){
+    //         var canvas = this.getCanvas();
+    //         var ctx = canvas.getContext('2d');
+    //         ctx.stroke();  
+    //     }
+    // });
+    // var layer = new mylayer();
+    // layer.addTo(map);
+}
 
 function searchAreabtn() {
     // get text value
-    const searchTxts = document.getElementById('searchArea').value;
-
+    const searchTxt = document.getElementById('searchArea').value;
     var message = "検索した条件がありません。";
-    if (searchTxts != null) {
+    if (searchTxt != null && searchTxt === undefined) {
         // 動確
-        document.getElementById('msg').innerHTML = searchTxts;
-
+        document.getElementById('msg').innerHTML = searchTxt;
         let test = L.marker([35.6769, 139.4890]).bindPopup("test").addTo(map);
         // find area↓
 
@@ -171,62 +203,11 @@ function findMyLocation() {
     navigator.geolocation.getCurrentPosition(success, error);
 }
 
-// 検索した結果を元に地図の緯度と経度を取得し、マーカでその対象のエリアを示す
-//function searchResult(latitude, longitude) {
-
-//    let la = latitude;
-//    let lg = longitude;
-
-//    map.setView([la, lg], 15);
-//    L.marker([la, lg]).addTo(map);
-
-
-
-
-//    //let getValue = document.getElementById('searchTxt').value;
-//    //document.getElementById('msg1').innerHTML = getValue;
-//    //var postData = {
-//    //    getValue: getValue
-//    //};
-
-//    // c#側にtextBoxの値を投げる
-//    //$.ajax({
-//    //    url: "/Home/Leaflet",
-//    //    type: 'Post',
-//    //    dataType: 'Json',
-//    //    data: JSON.stringify(postData),
-//    //    //data: { searchTxt: searchTxt}
-//    //    contentType: 'application/json',
-//    //    success: function (result) {
-//    //        document.getElementById('msg1').innerHTML = result + "成功";
-//    //        console.log("成功:" + result);
-//    //    },
-//    //    error: function (XMLHttpRequest, testStatus, errorThrown) {
-//    //        document.getElementById('msg1').innerHTML = getValue + "失敗";
-//    //        console.log("XMLHttpRequest:" + XMLHttpRequest.state);
-//    //        console.log("testStatus:" + testStatus);
-//    //        console.log("errorThrown:" + errorThrown.message);
-//    //    },
-//    //    //complete: function(data) { alert(data.resposeText)},
-//    //});
-
-//    // 返ってきた値を判別するtry catch
-
-//    // 返ってきた値を緯度と経度にセットし、そのに検索する
-//    //try
-//    //{
-//    //    // li要素を取得
-//    //    elements = document.getElementsByTagName('li');
-//    //    let latitude = [elements[0]];
-//    //    let longitude = [elements[1]];
-
-//    //    document.getElementById('msg1') = elements;
-//    //    map.setView([latitude, longitude], 15);
-//    //    L.marker([latitude, longitude]).addTo(map);
-//    //}
-//    //catch (err)
-//    //{
-//    //    console.error(err);
-//    //}
-//}
-
+  // 座標調べる処理
+// function mousemove(e){
+//     // x,y座標を取得
+//     var x = e.clientX;
+//     var y = e.clientY;
+//     // var str = "X座標" + e.clientX + "y座標" + e.clientY;
+//     // document.getElementById('area').innerText=str;
+// }
