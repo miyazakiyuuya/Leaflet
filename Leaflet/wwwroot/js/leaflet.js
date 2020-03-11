@@ -1,7 +1,8 @@
 ﻿var map;
 
 var latlngss = [];
-
+var plys;
+var polygonss;
 function displayleaflet() {
     //地図を表示するdiv要素のidを設定
     map = L.map('map');
@@ -131,24 +132,98 @@ function displayleaflet() {
         [37.6682, 140.4787]];
     var ply = L.polyline(sss, { color: 'red' }).addTo(map);
 
+
+    if (sessionStorage.getItem('1') == undefined) {
+        console.log("session空");
+    } else {
+        console.log("session有り");
+        var ar = [];
+        var gg = sessionStorage.getItem('1');
+        console.log("session有る" + sessionStorage.getItem('1'));
+        var array = gg.split(',');
+        // for(var i = 0; array.length; i++){
+        // var aa = array.push([i]);
+        // }
+        console.log("test:" + array);
+
+        //var p = ar.push([gg]);
+        //console.log("test:" + p);
+        //L.polygon(p, {color: 'black'}).addTo(map); 
+
+        //L.polygon(aa, {color: 'black'}).addTo(map); 
+    }
+
+
+    // mapの上にマウスをクリックした場合
+    map.on('click', function (e) {
+        map.addEventListener('mousemove', movemause); // 移動した場合
+        map.addEventListener('mouseup', upmause); //マウスを離した場合
+    });
+
     // マウスクリックで任意の図形を描く処理(マウスを押すごとに)
-    map.on('mousedown', function (e) {
+    //map.on('mousemove', function(e)
+    function movemause(e) {
         // x,y座標取得
         let x = e.latlng.lat;
         let y = e.latlng.lng;
 
-        //console.log("最初:"+latlngss.length);
+        //debug console.log("最初:"+latlngss.length);
         // 初期の場合
         if (latlngss.length === 0) {
             // 配列に緯度と経度をセット
-            latlngss.push([x, y], [x, y]);
-            var ply = L.polyline(latlngss, { color: 'black', "weight": 10 }).addTo(map);
+            latlngss.push([x, y]);
+            ply = L.polyline(latlngss, { color: 'black', "weight": 10 }).addTo(map);
         }
         else {
+            // マウスを動かすたびに配列に緯度と経度を格納
             latlngss.push([x, y]);
-            var ply = L.polyline(latlngss, { color: 'black', "weight": 10 }).addTo(map);
+            ply = L.polyline(latlngss, { color: 'black', "weight": 10 }).addTo(map);
+            //console.log(x + " " + y);
         }
-    });
+    };
+
+    // マウスクリックを再度クリック後の処理(mouseup) alertを出し、保存するかしないかを選択する
+    // yesならば、配列に格納orそのままマップに表示する。Noならば保存しない。
+    //map.on('mouseup', function(e)
+    function upmause() {
+        // 配列に何もない場合は処理は行わない
+        if (latlngss.length == 0) {
+            // nothing to do
+        }
+        else {
+            var result = window.confirm("Do you want to save it???");
+            // 一時保存処理
+            if (result == true) {
+                console.log("clear前:" + latlngss.length);
+                // ポリゴンで地図に表示する。
+                polygonss = L.polygon(latlngss, { color: 'red' }).addTo(map);
+                // 配列をクリアする。これにより、描いた図形を連続で描かなくて済む(新しく図形が描ける)
+                //latlngss.length = 0;
+                console.log("clear後:" + latlngss.length);
+                console.log("保存完了");
+
+                if (('sessionStorage' in window) && (window.sessionStorage !== null)) {
+                    // セッションストレージが使える
+                    console.log("セッションが使える");
+                    sessionStorage.setItem('1', latlngss);
+                    window.sessionStorage.setItem('1', latlngss);
+                    //console.log("セッション入れる前:" + latlngss);
+                    console.log("セッションに入れる後:" + sessionStorage.getItem('1'));
+
+                } else {
+                    // 使えない。。。
+                    console.log("つかえない");
+                }
+            }
+            else // 保存しない
+            {
+                // nothing to do
+                console.log("保存なし");
+            }
+        }
+    };
+
+
 
 
 
