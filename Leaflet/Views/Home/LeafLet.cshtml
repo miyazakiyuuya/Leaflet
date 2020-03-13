@@ -27,36 +27,35 @@
         </div>
         <h1>leaflet地図</h1>
         <div id="map" style="width:600px;height:600px"></div>
+        <input type="submit" value="フリーハンド" id="btn" onclick="freeDrawing()" />
         <p>
-            テストテキスト:<input type="text" value="" id="searchArea">
+            検索したいエリア:<input type="text" value="" id="searchArea">
             <input type="submit" value="検索" onclick="searchAreabtn()">
         </p>
         <button id="ss" onclick="findMyLocation()">現在地を表示</button>
         <span id="msg"></span>
-        <span id="msg1"></span>
-    </div>
 
-    <div>
-        <form action="/Home/Leaflet" method="post">
-            検索したいエリア:<input type="text" value="" name="searchTxt" />
-            <input type="submit" value="検索" />
-        </form>
-        @ViewData["m"]
-        @ViewData["a"]
-        @ViewData["b"]
+        <div>
+            @*<form action="/Home/Leaflet" method="post">
+                検索したいエリア:<input type="text" value="" name="searchTxt" />
+                <input type="submit" value="検索" />
+            </form>*@
+            @ViewData["m"]
+            @ViewData["a"]
+            @ViewData["b"]
 
 
 
-        @*modelをつかう*@
-        @{
-            LeafletModel lm = ViewBag.LeafletModel;
-            <p>@lm.name</p>
-            <p>@lm.latitude</p>
-            <p>@lm.longitude</p>
-        }
+            @*modelをつかう*@
+            @{
+                LeafletModel lm = ViewBag.LeafletModel;
+                <p>@lm.name</p>
+                <p>@lm.latitude</p>
+                <p>@lm.longitude</p>
+            }
 
-        <div id="area1" onmousemove="mousemove(event);" />　
-    </div>
+            <div id="area1" onmousemove="mousemove(event);" />
+        </div>
     </div>
 </body>
 </html>
