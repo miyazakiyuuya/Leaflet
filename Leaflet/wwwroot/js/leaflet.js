@@ -1,15 +1,16 @@
 ﻿var map;
 var latlngss = [];
-var test = [];
 var plys;
 var polygonss;
-let isDrawing = false;
+var isDrawing = false;
 var status = 0;
+var xlist = [];
+var ylist = [];
 function displayleaflet() {
     //地図を表示するdiv要素のidを設定
     map = L.map('map');
     //地図の中心とズームレベルを指定 (経度 緯度)
-    map.setView([35.6689, 139.4776], 15); //5
+    map.setView([35.6689, 139.4776], 20); //5
 
     //　標準地図タイルレイヤ
     var gsi = new L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
@@ -135,18 +136,20 @@ function displayleaflet() {
 
 
     // sessionStorageがあるかチェック
-    if (sessionStorage.getItem('1') == undefined) {
+    //if(sessionStorage.getItem('1') == undefined)
+    if (localStorage.getItem('1') == undefined) {
         console.log("session空");
     }
     else {
         // ある場合
         console.log("session有り");
         var array = [];
-        var gg = sessionStorage.getItem('1');
-        array = gg.split(',');
-        console.log("session有り" + sessionStorage.getItem('1'));
-        var xlist = [];
-        var ylist = [];
+        // sessionの値を取得
+        var sessionValues = localStorage.getItem('1');
+        console.log("セッション値:" + sessionValues);
+        array = sessionValues.split(',');
+
+        // sessionの値をx,yにそれぞれ振り分ける
         for (var index = 0; index < array.length; index++) {
             // 偶数のindexをx座標に格納
             if (index % 2 == 0) {
@@ -157,22 +160,17 @@ function displayleaflet() {
                 ylist.push(array[index]);
             }
         }
-        // console.log("x座標の配列:" + xlist);
-        // console.log("y座標の配列:" + ylist);
-        // console.log("test:" + array.length);
-        // L.polyline([xlist,ylist], {color: 'black'}).addTo(map);
-        for (var i = 0; i < xlist.length; i++) {
-            test.push(xlist[i], ylist[i]);
-        }
 
-        var tests = [test];
-        console.log("ssss:" + tests);
-        //L.polygon(tests, {color: 'black'}).addTo(map);
-        // console.log("u:" + typeof(u));
+        // polygonにx,yの値をセットする
+        for (var u = 0; u < xlist.length; u++) {
+            var jj = L.polygon([[xlist[u], ylist[u]]], { color: 'red' }).addTo(map);
+            // debug let mma = L.marker([xlist[u], ylist[u]]).bindPopup("x").addTo(map);
+            console.log("回数と値:" + u + " " + jj);
+        }
     }
 }
 
-// フリーハンドボタンstartを押下した場合の処理
+// フリーハンドボタンを押下した処理(偶数：drawing 中止, 奇数:drawing 始動)
 function freeDrawing() {
     status++;
     console.log(status);
@@ -205,8 +203,6 @@ function movemause(e) {
         // x,y座標取得
         let x = e.latlng.lat;
         let y = e.latlng.lng;
-
-        // console.log("型checked:" + " " +typeof(x));
         //debug console.log("最初:"+latlngss.length);
         // 初期の場合
         if (latlngss.length === 0) {
@@ -238,7 +234,7 @@ function upmause() {
             if (result == true) {
                 // 属性値を記載
                 var areaname = window.prompt("エリアの名前を入力してください。");
-                var areacolor = window.prompt("red, pink, blueのどれかを入力してください。");
+                var areacolor = window.prompt("エリアの色を入力してください。");
                 console.log("clear前:" + latlngss.length);
                 // ポリゴンで地図と色を表示する。
                 polygonss = L.polygon(latlngss, { color: areacolor }).addTo(map);
@@ -251,11 +247,12 @@ function upmause() {
                 if (('sessionStorage' in window) && (window.sessionStorage !== null)) {
                     // セッションストレージが使える
                     console.log("セッションが使える");
-                    sessionStorage.setItem('1', latlngss);
-                    window.sessionStorage.setItem('1', latlngss);
-                    // console.log("セッション入れる前:" + latlngss);
-                    console.log("セッションに入れる後:" + sessionStorage.getItem('1'));
-                    latlngss.length = 0;
+                    //sessionStorage.setItem('1', latlngss);
+                    //window.sessionStorage.setItem('1', latlngss);
+                    localStorage.setItem('1', latlngss);
+                    console.log("セッション入れる前:" + latlngss);
+                    console.log("セッションに入れる後:" + localStorage.getItem('1'));
+                    //latlngss.length =0;
                 }
                 else {
                     console.log("sessionStorageはつかえない");
