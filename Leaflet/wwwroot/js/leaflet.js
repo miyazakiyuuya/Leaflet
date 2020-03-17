@@ -6,6 +6,8 @@ var isDrawing = false;
 var status = 0;
 var xlist = [];
 var ylist = [];
+var areaname;
+var areacolor;
 function displayleaflet() {
     //地図を表示するdiv要素のidを設定
     map = L.map('map');
@@ -168,6 +170,26 @@ function displayleaflet() {
             console.log("回数と値:" + u + " " + jj);
         }
     }
+
+
+    // ajaxを用いてc#側に値を渡す(緯度、経度、エリアの名前、color)
+    var leafletList = {
+        latitude: xlist,
+        longitude:ylist
+    }
+
+    $.ajax({
+        url: '/Home/Leaflet/',
+        type: 'POST',
+        dataType: 'JSON',
+        data: JSON.stringify(leafletList)
+    }).done(function (data) {
+        alert("test" + data);
+    }).fail(function (error, status) {
+        alert(status+ " " + "error" + JSON.stringify(leafletList));
+    });
+
+
 }
 
 // フリーハンドボタンを押下した処理(偶数：drawing 中止, 奇数:drawing 始動)
@@ -233,16 +255,17 @@ function upmause() {
             // 一時保存処理
             if (result == true) {
                 // 属性値を記載
-                var areaname = window.prompt("エリアの名前を入力してください。");
-                var areacolor = window.prompt("エリアの色を入力してください。");
+                areaname = window.prompt("エリアの名前を入力してください。");
+                areacolor = window.prompt("エリアの色を入力してください。");
                 console.log("clear前:" + latlngss.length);
                 // ポリゴンで地図と色を表示する。
                 polygonss = L.polygon(latlngss, { color: areacolor }).addTo(map);
                 // 属性項目:名前を付与
                 polygonss.bindPopup(areaname);
 
-                console.log("clear後:" + latlngss.lesngth);
+                //console.log("clear後:" + latlngss.length);
                 console.log("保存完了");
+
 
                 if (('sessionStorage' in window) && (window.sessionStorage !== null)) {
                     // セッションストレージが使える
@@ -253,6 +276,7 @@ function upmause() {
                     console.log("セッション入れる前:" + latlngss);
                     console.log("セッションに入れる後:" + localStorage.getItem('1'));
                     //latlngss.length =0;
+                   
                 }
                 else {
                     console.log("sessionStorageはつかえない");
@@ -308,6 +332,12 @@ function findMyLocation() {
     };
     navigator.geolocation.getCurrentPosition(success, error);
 }
+
+   
+
+
+
+
 
 
   // 座標調べる処理
