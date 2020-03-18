@@ -1,4 +1,5 @@
 ﻿using Leaflet.Models;
+using LeafLet.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -30,7 +31,7 @@ namespace Leaflet.Controllers
         }
 
         
-        public IActionResult Leaflet(string searchTxt)
+        public IActionResult Leaflet()
         {
             //ViewBag.LeafletModel = new LeafletModel();
             //var results = new List<string>();
@@ -60,7 +61,7 @@ namespace Leaflet.Controllers
             //                    results.Add(reader["longitude"] as string);
             //                }
             //            }
-            //        }
+            //        }f
             //        catch (Exception e)
             //        {
             //            Console.WriteLine(e);
@@ -71,7 +72,7 @@ namespace Leaflet.Controllers
             //            con.Close();
             //        }
             //    }
-                
+
             //    // 緯度と経度をstring型で取得
             //    lati = results[0];
             //    lon = results[1];
@@ -94,6 +95,49 @@ namespace Leaflet.Controllers
             //    ViewData["searchTxt"] = "null";
             //}
             return View();
+        }
+
+        // JSONに返す値
+        [HttpPost]
+        public ActionResult Method([FromBody] LeafLetModel le)
+        {
+            //foo = "test";
+            var foos = le.foo;
+            List<string> results = new List<string>();
+         
+            if (foos != null)
+            {
+                // DB接続
+                using (var con = new SqlConnection("Data Source=DESKTOP-UHLGPSV;Initial Catalog=sample;Integrated Security=True"))
+                using (var cmd = new SqlCommand(@"SELECT latitude FROM m_leaflet WHERE area_name = @area_name", con))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@area_name", foos));
+                    try
+                    {
+                        con.Open();
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                // 緯度と経度の値をセット
+                                results.Add(reader["latitude"] as string);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+                    finally
+                    {
+                        con.Close();
+                    }
+                }
+            }
+            var ans = results[0];
+            return Json(ans);
         }
 
        

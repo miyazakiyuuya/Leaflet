@@ -8,6 +8,7 @@ var xlist = [];
 var ylist = [];
 var areaname;
 var areacolor;
+var xhr = new XMLHttpRequest();
 function displayleaflet() {
     //地図を表示するdiv要素のidを設定
     map = L.map('map');
@@ -20,12 +21,12 @@ function displayleaflet() {
     });
 
     //　オープンストリート地図タイル
-    var osm = new L.tileLayer('http://tile.openstreetmap.jp/{z}/{x}/{y}.png',
-        { attribution: "<a href='http://osm.org/copyright' target='_blank'></a> contributors" });
+    var osm = new L.tileLayer('https://tile.openstreetmap.jp/{z}/{x}/{y}.png',
+        { attribution: "<a href='https://osm.org/copyright' target='_blank'></a> contributors" });
 
     // 地理院地図の淡色地図タイル
-    var gsipale = new L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',
-        { attribution: "<a href='http://portal.cyberjapan.jp/help/termsofuse.html' target='_blank'></a>" });
+    var gsipale = new L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',
+        { attribution: "<a href='https://portal.cyberjapan.jp/help/termsofuse.html' target='_blank'></a>" });
 
     // ↑３つの地図を配列に格納
     var baseMaps = {
@@ -167,29 +168,37 @@ function displayleaflet() {
         for (var u = 0; u < xlist.length; u++) {
             var jj = L.polygon([[xlist[u], ylist[u]]], { color: 'red' }).addTo(map);
             // debug let mma = L.marker([xlist[u], ylist[u]]).bindPopup("x").addTo(map);
-            console.log("回数と値:" + u + " " + jj);
+            //console.log("回数と値:" + u + " " + jj);
         }
     }
+    
 
-
-    // ajaxを用いてc#側に値を渡す(緯度、経度、エリアの名前、color)
-    var leafletList = {
-        latitude: xlist,
-        longitude:ylist
-    }
-
+    // ajaxを用いてc#側に文字列で値(緯度、経度、エリアの名前、color)を渡す(x,y配列で渡すとメモリが大きく入らない)
+    //var leafletList = {
+    //    latitude: xlist,
+    //    longitude: ylist
+    //}
+    var data_s = {
+        foo: "test"
+    };
+    var strx = xlist.toString();
+    var stry = ylist.toString();
+    var leafletList = {};
     $.ajax({
-        url: '/Home/Leaflet/',
+        url: '/Home/Method',
         type: 'POST',
         dataType: 'JSON',
-        data: JSON.stringify(leafletList)
+        contentType: 'application/json',
+        data: JSON.stringify(data_s)  //JSON.stringify(leafletList)
     }).done(function (data) {
         alert("test" + data);
-    }).fail(function (error, status) {
-        alert(status+ " " + "error" + JSON.stringify(leafletList));
+        //console.log("デー成功" + data);
+    }).fail(function (error, status, data) {
+        //alert(status + " " + error + " " + data + " " + JSON.stringify(leafletList));
+        alert("失敗");
+        //console.log("データ失敗" + " " + data);
+        
     });
-
-
 }
 
 // フリーハンドボタンを押下した処理(偶数：drawing 中止, 奇数:drawing 始動)
