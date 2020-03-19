@@ -8,6 +8,8 @@ var xlist = [];
 var ylist = [];
 var areaname;
 var areacolor;
+var strx;
+var stry;
 var xhr = new XMLHttpRequest();
 function displayleaflet() {
     //地図を表示するdiv要素のidを設定
@@ -54,7 +56,7 @@ function displayleaflet() {
     // 経度、緯度の計算(マウスを動かす時)
     var options = {
         position: 'bottomleft',
-        numDigits: 8
+        numDigits: 2
     }
     L.control.mousePosition(options).addTo(map);
 
@@ -140,65 +142,82 @@ function displayleaflet() {
 
     // sessionStorageがあるかチェック
     //if(sessionStorage.getItem('1') == undefined)
-    if (localStorage.getItem('1') == undefined) {
-        console.log("session空");
-    }
-    else {
-        // ある場合
-        console.log("session有り");
-        var array = [];
-        // sessionの値を取得
-        var sessionValues = localStorage.getItem('1');
-        console.log("セッション値:" + sessionValues);
-        array = sessionValues.split(',');
+    //if (localStorage.getItem('1') == undefined) {
+    //    console.log("session空");
+    //}
+    //else {
+    //    // ある場合
+    //    console.log("session有り");
+    //    var array = [];
+    //    // sessionの値を取得
+    //    var sessionValues = localStorage.getItem('1');
+    //    console.log("セッション値:" + sessionValues);
+    //    array = sessionValues.split(',');
 
-        // sessionの値をx,yにそれぞれ振り分ける
-        for (var index = 0; index < array.length; index++) {
-            // 偶数のindexをx座標に格納
-            if (index % 2 == 0) {
-                xlist.push(array[index]);
-            }
-            else {
-                // 奇数のindexをy座標に格納
-                ylist.push(array[index]);
-            }
-        }
+    //    // sessionの値をx,yにそれぞれ振り分ける
+    //    for (var index = 0; index < array.length; index++) {
+    //        // 偶数のindexをx座標に格納
+    //        if (index % 2 == 0) {
+    //            xlist.push(array[index]);
+    //        }
+    //        else {
+    //            // 奇数のindexをy座標に格納
+    //            ylist.push(array[index]);
+    //        }
+    //    }
 
-        // polygonにx,yの値をセットする
-        for (var u = 0; u < xlist.length; u++) {
-            var jj = L.polygon([[xlist[u], ylist[u]]], { color: 'red' }).addTo(map);
-            // debug let mma = L.marker([xlist[u], ylist[u]]).bindPopup("x").addTo(map);
-            //console.log("回数と値:" + u + " " + jj);
-        }
-    }
+    //    // polygonにx,yの値をセットする
+    //    for (var u = 0; u < xlist.length; u++) {
+    //        var jj = L.polygon([[xlist[u], ylist[u]]], { color: 'red' }).addTo(map);
+    //        // debug let mma = L.marker([xlist[u], ylist[u]]).bindPopup("x").addTo(map);
+    //        //console.log("回数と値:" + u + " " + jj);
+    //    }
+    
     
 
     // ajaxを用いてc#側に文字列で値(緯度、経度、エリアの名前、color)を渡す(x,y配列で渡すとメモリが大きく入らない)
-    //var leafletList = {
-    //    latitude: xlist,
-    //    longitude: ylist
-    //}
-    var data_s = {
-        foo: "test"
+    
+    var aaa = [];
+    var aab = [];
+    var aac = [];
+
+    var data_str = {
+        areaname: areaname
     };
-    var strx = xlist.toString();
-    var stry = ylist.toString();
-    var leafletList = {};
     $.ajax({
-        url: '/Home/Method',
+        url: '/Home/Select',
         type: 'POST',
         dataType: 'JSON',
         contentType: 'application/json',
-        data: JSON.stringify(data_s)  //JSON.stringify(leafletList)
+        data: JSON.stringify(data_str)  //JSON.stringify(leafletList)
     }).done(function (data) {
-        alert("test" + data);
+        //alert("test" + data);
+
+        for (var i = 0; i < data.length; i++) {
+
+            if (i % 3 == 0) {
+                aab.push(data[i]);
+            } else if (i % 3 == 1) {
+                aac.push(data[i]);
+            } else if (i % 3 == 2) {
+                aaa.push(data[i]);
+            }
+            else {
+
+            }
+        }
+        alert("test1"+ "エリアの名前: "+ aaa +" "+ "xlist: "+" " + aab + " " + "ylist: " + aac);
+        
         //console.log("デー成功" + data);
     }).fail(function (error, status, data) {
         //alert(status + " " + error + " " + data + " " + JSON.stringify(leafletList));
         alert("失敗");
-        //console.log("データ失敗" + " " + data);
-        
+        //console.log("データ失敗" + " " + data);   
     });
+    for (var u = 0; u < aab.length; u++) {
+        var jj = L.polygon([[aab[u], aac[u]]], { color: 'red' }).addTo(map);
+        console.log("ポリゴン:"+jj);
+    }
 }
 
 // フリーハンドボタンを押下した処理(偶数：drawing 中止, 奇数:drawing 始動)
@@ -266,30 +285,67 @@ function upmause() {
                 // 属性値を記載
                 areaname = window.prompt("エリアの名前を入力してください。");
                 areacolor = window.prompt("エリアの色を入力してください。");
+                
                 console.log("clear前:" + latlngss.length);
                 // ポリゴンで地図と色を表示する。
                 polygonss = L.polygon(latlngss, { color: areacolor }).addTo(map);
                 // 属性項目:名前を付与
                 polygonss.bindPopup(areaname);
+                let h = latlngss.toString();
+                let hh = [];
+                hh = h.split(',');
+
+
+                for (var j = 0; j <= hh.length; j++) {
+                    // 偶数のindexをx座標に格納
+                    if (j % 2 == 0) {
+                        xlist.push(hh[j]);
+                    }
+                    else {
+                        // 奇数のindexをy座標に格納
+                        ylist.push(hh[j]);
+                    }
+                }
+
+                strx = xlist.toString();
+                stry = ylist.toString();
 
                 //console.log("clear後:" + latlngss.length);
                 console.log("保存完了");
 
+                var data = {
+                    //foo: "test"
+                    latitude: strx,
+                    longitude: stry,
+                    areaname: areaname
+                };
+                $.ajax({
+                    url: '/Home/Insert',
+                    type: 'POST',
+                    dataType: 'JSON',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data)  //JSON.stringify(leafletList)
+                }).done(function (data) {
+                    alert("成功");
+                }).fail(function (error, status, data) {
+                    alert("失敗");                 
+                });
 
-                if (('sessionStorage' in window) && (window.sessionStorage !== null)) {
-                    // セッションストレージが使える
-                    console.log("セッションが使える");
-                    //sessionStorage.setItem('1', latlngss);
-                    //window.sessionStorage.setItem('1', latlngss);
-                    localStorage.setItem('1', latlngss);
-                    console.log("セッション入れる前:" + latlngss);
-                    console.log("セッションに入れる後:" + localStorage.getItem('1'));
-                    //latlngss.length =0;
+
+                //if (('sessionStorage' in window) && (window.sessionStorage !== null)) {
+                //    // セッションストレージが使える
+                //    console.log("セッションが使える");
+                //    //sessionStorage.setItem('1', latlngss);
+                //    //window.sessionStorage.setItem('1', latlngss);
+                //    localStorage.setItem('1', latlngss);
+                //    console.log("セッション入れる前:" + latlngss);
+                //    console.log("セッションに入れる後:" + localStorage.getItem('1'));
+                //    //latlngss.length =0;
                    
-                }
-                else {
-                    console.log("sessionStorageはつかえない");
-                }
+                //}
+                //else {
+                //    console.log("sessionStorageはつかえない");
+                //}
                 isDrawing = false;
             }
             else // 保存しない

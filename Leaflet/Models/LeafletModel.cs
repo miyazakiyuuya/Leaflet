@@ -7,9 +7,9 @@ namespace LeafLet.Models
 {
     public class LeafLetModel
     {
-        //public string area_name { get; set; }
-        //public string latitude { get; set; }
-        //public string longitude { get; set; }
+        public string AreaName { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
         //public string color { get; set; }
 
         public string foo { get; set; }

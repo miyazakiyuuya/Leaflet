@@ -99,29 +99,35 @@ namespace Leaflet.Controllers
 
         // JSONに返す値
         [HttpPost]
-        public ActionResult Method([FromBody] LeafLetModel le)
+        public ActionResult Select([FromBody] LeafLetModel le)
         {
-            //foo = "test";
-            var foos = le.foo;
+            var area = le.AreaName;
+           // var lat = le.Latitude;
+           // var longi = le.Longitude;      
+
             List<string> results = new List<string>();
          
-            if (foos != null)
+            if(area == null)
             {
                 // DB接続
                 using (var con = new SqlConnection("Data Source=DESKTOP-UHLGPSV;Initial Catalog=sample;Integrated Security=True"))
-                using (var cmd = new SqlCommand(@"SELECT latitude FROM m_leaflet WHERE area_name = @area_name", con))
+                //using (var cmd = new SqlCommand(@"SELECT * FROM m_leaflet WHERE area_name = @area_name", con))
+                using (var command = con.CreateCommand())
                 {
-                    cmd.Parameters.Add(new SqlParameter("@area_name", foos));
+                    // cmd.Parameters.Add(new SqlParameter("@area_name", area));
                     try
                     {
                         con.Open();
+                        command.CommandText = @"SELECT * FROM m_leafletInfo";
 
-                        using (var reader = cmd.ExecuteReader())
+                        using (var reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                // 緯度と経度の値をセット
-                                results.Add(reader["latitude"] as string);
+                                    // 緯度と経度の値をセット
+                                    results.Add(reader["latitude"] as string);
+                                    results.Add(reader["longitude"] as string);
+                                    results.Add(reader["area_name"] as string);
                             }
                         }
                     }
@@ -136,13 +142,58 @@ namespace Leaflet.Controllers
                     }
                 }
             }
-            var ans = results[0];
-            return Json(ans);
+
+            return Json(results);
         }
 
-       
+        // JSONに返す値
+        [HttpPost]
+        public ActionResult Insert([FromBody] LeafLetModel lea)
+        {
+            
+            string area = lea.AreaName;
+            string lat = lea.Latitude;
+            string longi = lea.Longitude;
 
-       [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+            if (area != null)
+            {
+                // DB接続
+                using (var con = new SqlConnection("Data Source=DESKTOP-UHLGPSV;Initial Catalog=sample;Integrated Security=True"))
+                //using (var cmd = new SqlCommand(@"SELECT * FROM m_leaflet WHERE area_name = @area_name", con))
+                using (var command = con.CreateCommand())
+                {
+                    // cmd.Parameters.Add(new SqlParameter("@area_name", area));
+                    try
+                    {
+                        con.Open();
+                        command.CommandText = @"INSERT INTO m_leafletInfo(latitude, longitude, area_name)VALUES(@latitude, @longitude, @area_name)";
+
+                        // 緯度と経度の値をセット
+                        command.Parameters.Add(new SqlParameter("@latitude", lat));
+                        command.Parameters.Add(new SqlParameter("@longitude", longi));
+                        command.Parameters.Add(new SqlParameter("@area_name", area));
+                        
+                        command.ExecuteNonQuery();
+                        
+                        return Json("success"); 
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+                    finally
+                    {
+                        con.Close();
+                    }
+                }
+            }
+            return Json("error");
+        }
+
+
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
