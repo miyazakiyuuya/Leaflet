@@ -172,11 +172,10 @@ function displayleaflet() {
     //        // debug let mma = L.marker([xlist[u], ylist[u]]).bindPopup("x").addTo(map);
     //        //console.log("回数と値:" + u + " " + jj);
     //    }
-    
-    
+
+
 
     // ajaxを用いてc#側に文字列で値(緯度、経度、エリアの名前、color)を渡す(x,y配列で渡すとメモリが大きく入らない)
-    
     var aaa = [];
     var aab = [];
     var aac = [];
@@ -189,35 +188,40 @@ function displayleaflet() {
         type: 'POST',
         dataType: 'JSON',
         contentType: 'application/json',
-        data: JSON.stringify(data_str)  //JSON.stringify(leafletList)
+        data: JSON.stringify(data_str) 
     }).done(function (data) {
-        //alert("test" + data);
+        alert(data);
 
         for (var i = 0; i < data.length; i++) {
 
-            if (i % 3 == 0) {
+            if (i % 3 == 0) { // x
                 aab.push(data[i]);
-            } else if (i % 3 == 1) {
+            } else if (i % 3 == 1) { // y
                 aac.push(data[i]);
-            } else if (i % 3 == 2) {
+            } else if (i % 3 == 2) { // name
                 aaa.push(data[i]);
             }
             else {
 
             }
         }
-        alert("test1"+ "エリアの名前: "+ aaa +" "+ "xlist: "+" " + aab + " " + "ylist: " + aac);
-        
-        //console.log("デー成功" + data);
+
+        // ↓末尾の余計な,を削除するため(drawing中に空で入ってくる時があるx座標)
+        var xx = aab.pop(); // 複数の場合落ちる。
+        // ,,の連続は削除|| 末尾に,があれば削除
+
+
+        // ↓謎なぜに一旦文字列=>配列に変換しないといけないのか
+        var xxx = xx.split(',');
+        var yy = aac.toString();
+        var yyy = yy.split(',');
+
+        for (var u = 0; u < yyy.length; u++) {
+            L.polygon([[xxx[u], yyy[u]]], { color: 'red' }).addTo(map);
+        }
     }).fail(function (error, status, data) {
-        //alert(status + " " + error + " " + data + " " + JSON.stringify(leafletList));
         alert("失敗");
-        //console.log("データ失敗" + " " + data);   
     });
-    for (var u = 0; u < aab.length; u++) {
-        var jj = L.polygon([[aab[u], aac[u]]], { color: 'red' }).addTo(map);
-        console.log("ポリゴン:"+jj);
-    }
 }
 
 // フリーハンドボタンを押下した処理(偶数：drawing 中止, 奇数:drawing 始動)
@@ -306,9 +310,11 @@ function upmause() {
                         ylist.push(hh[j]);
                     }
                 }
-
+                
+                //var sss = xlist.slice(0, -1);
                 strx = xlist.toString();
                 stry = ylist.toString();
+                console.log("strx:" + strx + "" + "stry:" + stry);
 
                 //console.log("clear後:" + latlngss.length);
                 console.log("保存完了");
