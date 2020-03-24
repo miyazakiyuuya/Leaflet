@@ -56,7 +56,7 @@ function displayleaflet() {
     // 経度、緯度の計算(マウスを動かす時)
     var options = {
         position: 'bottomleft',
-        numDigits: 2
+        numDigits: 9
     }
     L.control.mousePosition(options).addTo(map);
 
@@ -139,42 +139,6 @@ function displayleaflet() {
         [37.6682, 140.4787]];
     var ply = L.polyline(sss, { color: 'red' }).addTo(map);
 
-
-    // sessionStorageがあるかチェック
-    //if(sessionStorage.getItem('1') == undefined)
-    //if (localStorage.getItem('1') == undefined) {
-    //    console.log("session空");
-    //}
-    //else {
-    //    // ある場合
-    //    console.log("session有り");
-    //    var array = [];
-    //    // sessionの値を取得
-    //    var sessionValues = localStorage.getItem('1');
-    //    console.log("セッション値:" + sessionValues);
-    //    array = sessionValues.split(',');
-
-    //    // sessionの値をx,yにそれぞれ振り分ける
-    //    for (var index = 0; index < array.length; index++) {
-    //        // 偶数のindexをx座標に格納
-    //        if (index % 2 == 0) {
-    //            xlist.push(array[index]);
-    //        }
-    //        else {
-    //            // 奇数のindexをy座標に格納
-    //            ylist.push(array[index]);
-    //        }
-    //    }
-
-    //    // polygonにx,yの値をセットする
-    //    for (var u = 0; u < xlist.length; u++) {
-    //        var jj = L.polygon([[xlist[u], ylist[u]]], { color: 'red' }).addTo(map);
-    //        // debug let mma = L.marker([xlist[u], ylist[u]]).bindPopup("x").addTo(map);
-    //        //console.log("回数と値:" + u + " " + jj);
-    //    }
-
-
-
     // ajaxを用いてc#側に文字列で値(緯度、経度、エリアの名前、color)を渡す(x,y配列で渡すとメモリが大きく入らない)
     var aaa = [];
     var aab = [];
@@ -206,7 +170,7 @@ function displayleaflet() {
             }
         }
 
-        // ↓末尾の余計な,を削除するため(drawing中に空で入ってくる時があるx座標)
+        // ↓末尾の余計な,を削除するため(drawing中に空で入ってくる時があるx座標のみ)
         var xx = aab.pop(); // 複数の場合落ちる。
         // ,,の連続は削除|| 末尾に,があれば削除
 
@@ -217,7 +181,7 @@ function displayleaflet() {
         var yyy = yy.split(',');
 
         for (var u = 0; u < yyy.length; u++) {
-            L.polygon([[xxx[u], yyy[u]]], { color: 'red' }).addTo(map);
+            L.polygon([[xxx[u], yyy[u]]], { color: 'red', weight: 10 }).addTo(map);
         }
     }).fail(function (error, status, data) {
         alert("失敗");
@@ -299,8 +263,7 @@ function upmause() {
                 let hh = [];
                 hh = h.split(',');
 
-
-                for (var j = 0; j <= hh.length; j++) {
+                for (var j = 0; j <= latlngss.length; j++) {
                     // 偶数のindexをx座標に格納
                     if (j % 2 == 0) {
                         xlist.push(hh[j]);
@@ -315,12 +278,8 @@ function upmause() {
                 strx = xlist.toString();
                 stry = ylist.toString();
                 console.log("strx:" + strx + "" + "stry:" + stry);
-
-                //console.log("clear後:" + latlngss.length);
                 console.log("保存完了");
-
                 var data = {
-                    //foo: "test"
                     latitude: strx,
                     longitude: stry,
                     areaname: areaname
@@ -337,21 +296,6 @@ function upmause() {
                     alert("失敗");                 
                 });
 
-
-                //if (('sessionStorage' in window) && (window.sessionStorage !== null)) {
-                //    // セッションストレージが使える
-                //    console.log("セッションが使える");
-                //    //sessionStorage.setItem('1', latlngss);
-                //    //window.sessionStorage.setItem('1', latlngss);
-                //    localStorage.setItem('1', latlngss);
-                //    console.log("セッション入れる前:" + latlngss);
-                //    console.log("セッションに入れる後:" + localStorage.getItem('1'));
-                //    //latlngss.length =0;
-                   
-                //}
-                //else {
-                //    console.log("sessionStorageはつかえない");
-                //}
                 isDrawing = false;
             }
             else // 保存しない
