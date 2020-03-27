@@ -15,11 +15,5 @@ namespace LeafLet.Models
         public string foo { get; set; }
 
 
-        //public LeafletModel()
-        //{
-        //    name = "sss";
-        //    latitude = "緯度";
-        //    longitude = "経度";
-        //}
     }
 }

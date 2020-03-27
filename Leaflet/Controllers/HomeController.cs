@@ -144,7 +144,7 @@ namespace Leaflet.Controllers
                     try
                     { 
                         con.Open();
-                        // テスト
+                        //command.CommandText = @"INSERT INTO m_leaflet(latlngs, area_name, color)VALUES(geometry::STPolyFromText('POLYGON('+cast((@latlngs) as varchar)+''+ cast((@latlngss) as varchar)+')', 0), @area_name, @color)";
                         command.CommandText = @"INSERT INTO m_leaflet(latlngs, area_name, color)VALUES(geometry::STPolyFromText('POLYGON ((35.6682750269396 139.4777575135231, 35.555 135.632, 35.6682750269396 139.4777575135231, 35.6682750269396 139.4777575135231))', 0), @area_name, @color)";
                         // 緯度と経度の値をセット
                         command.Parameters.Add(new SqlParameter("@latlngs", latl));
