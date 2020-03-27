@@ -3,10 +3,13 @@ using LeafLet.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.SqlServer.Types;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Spatial;
+using Test.Models;
 
 namespace Leaflet.Controllers
 {
@@ -21,7 +24,6 @@ namespace Leaflet.Controllers
 
         public IActionResult Index()
         {
-            
             return View();
         }
 
@@ -41,7 +43,6 @@ namespace Leaflet.Controllers
         public ActionResult Select([FromBody] LeafLetModel le)
         {
             var area = le.AreaName;     
-
             List<string> results = new List<string>();
          
             if(area == null)
@@ -59,10 +60,10 @@ namespace Leaflet.Controllers
                         {
                             while (reader.Read())
                             {
-                                    // 緯度と経度の値をセット
-                                    results.Add(reader["latitude"] as string);
-                                    results.Add(reader["longitude"] as string);
-                                    results.Add(reader["area_name"] as string);
+                               // 緯度と経度の値をセット
+                               results.Add(reader["latitude"] as string);
+                               results.Add(reader["longitude"] as string);
+                               results.Add(reader["area_name"] as string);
                             }
                         }
                     }
@@ -77,15 +78,13 @@ namespace Leaflet.Controllers
                     }
                 }
             }
-
             return Json(results);
         }
 
         // JSONに返す値
         [HttpPost]
         public ActionResult Insert([FromBody] LeafLetModel lea)
-        {
-            
+        {    
             string area = lea.AreaName;
             string lat = lea.Latitude;
             string longi = lea.Longitude;
@@ -124,7 +123,52 @@ namespace Leaflet.Controllers
             return Json("error");
         }
 
+        [HttpPost]
+        public ActionResult Test([FromBody] TestModel test)
+        {
+            string latli = test.Latitude;
+            string longits = test.Longitude;
+            string arean = test.AreaName;
+            string color = test.AreaColor;
 
+            // insert文のpolygonの中の値を、=>スペースに変換する必要があるかもしれない
+            string latl = latli.Replace(",", " ");
+            string longit = longits.Replace(",", " ");
+
+            if (arean != null)
+            {
+                // DB接続
+                using (var con = new SqlConnection("Data Source=DESKTOP-UHLGPSV;Initial Catalog=sample;Integrated Security=True"))
+                using (var command = con.CreateCommand())
+                {
+                    try
+                    { 
+                        con.Open();
+                        // テスト
+                        command.CommandText = @"INSERT INTO m_leaflet(latlngs, area_name, color)VALUES(geometry::STPolyFromText('POLYGON ((35.6682750269396 139.4777575135231, 35.555 135.632, 35.6682750269396 139.4777575135231, 35.6682750269396 139.4777575135231))', 0), @area_name, @color)";
+                        // 緯度と経度の値をセット
+                        command.Parameters.Add(new SqlParameter("@latlngs", latl));
+                        command.Parameters.Add(new SqlParameter("@latlngss", longit));
+                        command.Parameters.Add(new SqlParameter("@area_name", arean));
+                        command.Parameters.Add(new SqlParameter("@color", color));
+
+                        command.ExecuteNonQuery();
+
+                        return Json("success");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+                    finally
+                    {
+                        con.Close();
+                    }
+                }
+            }
+            return Json("error");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

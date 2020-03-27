@@ -36,26 +36,6 @@
         </p>
         <button id="ss" onclick="findMyLocation()">現在地を表示</button>
         <span id="msg"></span>
-        <button id="btn1" >ajax</button>
-        <div>
-            @*<form action="/Home/Leaflet" method="post">
-                検索したいエリア:<input type="text" value="" name="searchTxt" />
-                <input type="submit" value="検索" />
-            </form>*@
-            @ViewData["m"]
-            @ViewData["a"]
-            @ViewData["b"]
-
-
-
-            @*modelをつかう*@
-            @{
-                @*LeafLetModel lm = ViewBag.LeafLetModel;
-                <p>@lm.area_name</p>
-                <p>@lm.latitude</p>
-                <p>@lm.longitude</p>*@
-            }
-        </div>
     </div>
 </body>
 </html>

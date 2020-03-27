@@ -114,7 +114,7 @@ function displayleaflet() {
         [35.66875823, 139.47722912], // A地点
         [35.669011, 139.4772023],    // B地点
         [35.66908072, 139.47792113], // C地点
-        [35.66893255, 139.47794795]  // D地点
+        [35.66893255, 139.47794795],  // D地点
     ],
         {
             color: 'green',
@@ -126,7 +126,7 @@ function displayleaflet() {
         [35.66803043, 139.47853267],
         [35.66825705, 139.47854877],
         [35.66826141, 139.47867751],
-        [35.66803043, 139.4786678]
+        [35.66803043, 139.4786678],
     ],
         {
             color: 'red',
@@ -284,6 +284,7 @@ function upmause() {
                     longitude: stry,
                     areaname: areaname
                 };
+
                 $.ajax({
                     url: '/Home/Insert',
                     type: 'POST',
@@ -294,6 +295,26 @@ function upmause() {
                     alert("成功");
                 }).fail(function (error, status, data) {
                     alert("失敗");                 
+                });
+
+                var data_test = {
+                    //latlngs: h,
+                    latitude: strx,
+                    longitude: stry,
+                    areaname: areaname,
+                    areacolor: areacolor
+                };
+
+                $.ajax({
+                    url: '/Home/Test',
+                    type: 'Post',
+                    dataType: 'JSON',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data_test)
+                }).done(function (data_test) {
+                    alert("成功2");
+                }).fail(function (data_test) {
+                    alert("失敗2");
                 });
 
                 isDrawing = false;
