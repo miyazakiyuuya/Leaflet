@@ -157,7 +157,6 @@ function displayleaflet() {
         alert(data);
 
         for (var i = 0; i < data.length; i++) {
-
             if (i % 3 == 0) { // x
                 aab.push(data[i]);
             } else if (i % 3 == 1) { // y
@@ -279,15 +278,18 @@ function upmause() {
                 stry = ylist.toString();
                 console.log("strx:" + strx + "" + "stry:" + stry);
                 console.log("保存完了");
+
                 var data = {
                     latitude: strx,
                     longitude: stry,
-                    areaname: areaname
+                    areaname: areaname,
+                    areacolor: areacolor
                 };
 
                 $.ajax({
                     url: '/Home/Insert',
                     type: 'POST',
+
                     dataType: 'JSON',
                     contentType: 'application/json',
                     data: JSON.stringify(data)  //JSON.stringify(leafletList)
@@ -297,25 +299,25 @@ function upmause() {
                     alert("失敗");                 
                 });
 
-                var data_test = {
-                    //latlngs: h,
-                    latitude: strx,
-                    longitude: stry,
-                    areaname: areaname,
-                    areacolor: areacolor
-                };
+                //var data_test = {
+                //    //latlngs: h,
+                //    latitude: strx,
+                //    longitude: stry,
+                //    areaname: areaname,
+                //    areacolor: areacolor
+                //};
 
-                $.ajax({
-                    url: '/Home/Test',
-                    type: 'Post',
-                    dataType: 'JSON',
-                    contentType: 'application/json',
-                    data: JSON.stringify(data_test)
-                }).done(function (data_test) {
-                    alert("成功2");
-                }).fail(function (data_test) {
-                    alert("失敗2");
-                });
+                //$.ajax({
+                //    url: '/Home/Test',
+                //    type: 'Post',
+                //    dataType: 'JSON',
+                //    contentType: 'application/json',
+                //    data: JSON.stringify(data_test)
+                //}).done(function (data_test) {
+                //    alert("成功2");
+                //}).fail(function (data_test) {
+                //    alert("失敗2");
+                //});
 
                 isDrawing = false;
             }
@@ -334,16 +336,13 @@ function searchAreabtn() {
     // get text value
     const searchTxt = document.getElementById('searchArea').value;
     var message = "検索した条件がありません。";
-    if (searchTxt != null && searchTxt === undefined) {
+    if (!searchTxt) {
         // 動確
-        document.getElementById('msg').innerHTML = searchTxt;
-        let test = L.marker([35.6769, 139.4890]).bindPopup("test").addTo(map);
-        // find area↓
-
-    }
-    else {
-        // 仮置き
+        //let test = L.marker([35.6769, 139.4890]).bindPopup("test").addTo(map);
         document.getElementById('msg').innerHTML = message;
+    } else {
+        // 仮置き
+        document.getElementById('msg').innerHTML = searchTxt;
     }
 }
 

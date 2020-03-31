@@ -10,10 +10,7 @@ namespace LeafLet.Models
         public string AreaName { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
-        //public string color { get; set; }
 
-        public string foo { get; set; }
-
-
+        public string AreaColor { get; set; }
     }
 }

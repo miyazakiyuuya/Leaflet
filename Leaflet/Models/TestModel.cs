@@ -11,9 +11,6 @@ namespace Test.Models
         public string Latitude { get; set; }
         public string Longitude { get; set; }
         public string AreaName { get; set; }
-        
-        public string AreaColor { get; set; }
-
-    
+        public string AreaColor { get; set; }    
     }
 }
