@@ -47,8 +47,10 @@ namespace Leaflet.Controllers
          
             if(area == null)
             {
-                // DB接続
-                using (var con = new SqlConnection("Data Source=DESKTOP-UHLGPSV;Initial Catalog=sample;Integrated Security=True"))
+                
+                // DB接続                                        
+                using (var con = new SqlConnection("Data Source =DESKTOP-9VE6279\\SQLEXPRESS; Initial Catalog=sample; Integrated Security=True"))
+                //using (var con = new SqlConnection("Data Source=DESKTOP-UHLGPSV;Initial Catalog=sample;Integrated Security=True"))
                 using (var command = con.CreateCommand())
                 {
                     try
@@ -60,10 +62,10 @@ namespace Leaflet.Controllers
                         {
                             while (reader.Read())
                             {
-                               // 緯度と経度の値をセット
-                               results.Add(reader["latitude"] as string);
-                               results.Add(reader["longitude"] as string);
-                               results.Add(reader["area_name"] as string);
+                                // 緯度と経度の値をセット
+                                results.Add(reader["latitude"] as string);
+                                results.Add(reader["longitude"] as string);
+                                results.Add(reader["area_name"] as string);
                             }
                         }
                     }
@@ -93,7 +95,8 @@ namespace Leaflet.Controllers
             if (area != null)
             {
                 // DB接続
-                using (var con = new SqlConnection("Data Source=DESKTOP-UHLGPSV;Initial Catalog=sample;Integrated Security=True"))
+                //using (var con = new SqlConnection("Data Source=DESKTOP-UHLGPSV;Initial Catalog=sample;Integrated Security=True"))
+                using (var con = new SqlConnection("Data Source =DESKTOP-9VE6279\\SQLEXPRESS; Initial Catalog= sample; Integrated Security=True"))
                 using (var command = con.CreateCommand())
                 {
                     try
